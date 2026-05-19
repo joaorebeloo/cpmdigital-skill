@@ -1,0 +1,26 @@
+{
+  "name": "cpmdigital-visual-engine",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local Playwright engine for visual reference contracts.",
+  "type": "module",
+  "bin": {
+    "visual-engine": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "analyze": "node dist/index.js analyze",
+    "dev": "tsx src/index.ts analyze"
+  },
+  "dependencies": {
+    "playwright": "^1.49.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
