@@ -13,6 +13,11 @@ install_dir() {
   local source="$1"
   local target="$2"
 
+  if [ ! -d "$source" ]; then
+    printf 'Skipping missing source: %s\n' "$source"
+    return
+  fi
+
   if [ -d "$target" ]; then
     printf 'Backing up existing %s\n' "$target"
     mv "$target" "$target.backup-$TIMESTAMP"
@@ -23,6 +28,7 @@ install_dir() {
 
 install_dir "$SOURCE_DIR/skills" "$TARGET_DIR/.ai/skills"
 install_dir "$SOURCE_DIR/workflows" "$TARGET_DIR/.ai/workflows"
+install_dir "$SOURCE_DIR/engine" "$TARGET_DIR/.ai/visual-engine"
 
 if [ ! -f "$TARGET_DIR/AGENTS.md" ]; then
   cp "$SOURCE_DIR/AGENTS.base.md" "$TARGET_DIR/AGENTS.md"
@@ -32,7 +38,7 @@ else
 
 ## Visual Contract Skills
 
-Use `.ai/skills` and `.ai/workflows` for visual reference analysis, existing app design refactors, motion contracts and design quizzes.
+Use `.ai/skills`, `.ai/workflows` and `.ai/visual-engine` for visual reference analysis, existing app design refactors, motion contracts and design quizzes.
 
 Short commands:
 
@@ -41,6 +47,17 @@ Short commands:
 - `quiz design` — ask only the questions needed to continue.
 - `motion check` — validate animation and motion against `motion.md`.
 - `update visual-skill` — update the installed skill pack.
+
+Real engine:
+
+When `.ai/visual-engine` exists, use the real Playwright engine for `ref: <url>`:
+
+```bash
+cd .ai/visual-engine
+npm install
+npm run build
+node dist/index.js analyze <url> --out ../contracts/<slug> --motion minimal
+```
 
 Rules:
 
@@ -61,7 +78,8 @@ cat > "$TARGET_DIR/.ai/visual-skill.lock" <<EOF
   "name": "cpmdigital-skill",
   "installedAt": "$TIMESTAMP",
   "source": "$SOURCE_DIR",
-  "commit": "$COMMIT_SHA"
+  "commit": "$COMMIT_SHA",
+  "engine": ".ai/visual-engine"
 }
 EOF
 
@@ -72,3 +90,4 @@ printf -- '- design: <route> with <contract>\n'
 printf -- '- quiz design\n'
 printf -- '- motion check\n'
 printf -- '- update visual-skill\n'
+printf '\nReal engine installed at .ai/visual-engine\n'
